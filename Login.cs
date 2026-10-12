@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace PA
 {
-    public partial class Login : APCPA
+    public partial class MainPage : APCPA
     {
         private FontCLo FontCLo;
 

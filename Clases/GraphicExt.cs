@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
-using System.Windows.Forms;
+using System.Data.SQLite;
 using System.Security.Cryptography.X509Certificates;
 using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.CompilerServices;
+using APCPA;
 
-namespace PA
+namespace APCPA
 {
     public static class GraphicExt
     {
@@ -30,7 +31,7 @@ namespace PA
         /// <summary>
         /// Escudo maestro: recorre todo el formulario e inyecta el buffer doble a cada contenedor.
         /// </summary>
-        public static void OpFullUI(this Form form_item)
+        public static void OpFullUI(this Page form_item)
         {
             // Función local recursiva para barrer el árbol de controles
             void ReadControls(Control mainFather)

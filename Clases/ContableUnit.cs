@@ -3,7 +3,6 @@ using System.IO;
 using System.Data;
 using System.Text;
 using System.Security.Cryptography;
-using System.Data.SQLite;
 using System.Data.SqlClient;
 using System.Diagnostics;
 

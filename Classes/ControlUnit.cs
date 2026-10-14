@@ -33,7 +33,7 @@ namespace PA
         private const string LOCK_SIGNATURE = "system_final_door_lock"; // Identificador DOM
 
         // ========================================================
-        // CRIPTO DE BAJO NIVEL (BYTES PUROS)
+        // CRIPTO BLOB
         // ========================================================
 
         /// <summary>

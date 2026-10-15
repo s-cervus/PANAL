@@ -363,7 +363,7 @@ namespace PA
         // AUTH Cryptan
         // ========================================================
 
-        public static bool ValidarYMutarLogin(string usuario, string password)
+        public static bool CheckANDRotate(string usuario, string password)
         {
             if (IsLockedDown())
             {

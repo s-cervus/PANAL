@@ -4,6 +4,7 @@ using System.Data;
 using System.Text;
 using System.Security.Cryptography;
 using System.Data.SQLite;
+using System.Data.SqlTypes;
 using System.Data.SqlClient;
 using System.Diagnostics;
 
@@ -28,7 +29,7 @@ namespace PA
         private const string LocalConnectionString = @"Data Source=data_PDC7\login.db;Version=3;Foreign Keys=True;";
         private const string ServerConnectionString = @"Server=tu_servidor_vps;Database=EmpresaDB;Integrated Security=True;";
 
-        private const string PEPPER = "Equipo█7";
+        private const string PEPPER = "Equipo█5";
         private const int _GOLD_HEARTH = 65537; // Constante mutante para Key Stretching
         private const string LOCK_SIGNATURE = "system_final_door_lock"; // Identificador DOM
 

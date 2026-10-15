@@ -1,12 +1,8 @@
-﻿using System;
-using System.IO;
-using System.Data;
-using System.Text;
-using System.Security.Cryptography;
-using System.Data.SQLite;
-using System.Data.SqlTypes;
+﻿using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics;
+using System.Data.SQLite;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace PA
 {
@@ -588,7 +584,7 @@ namespace PA
                 cmd.Parameters.Add("@caramel", DbType.Binary).Value = caramel;
                 cmd.ExecuteNonQuery();
             }
-        } 
+        }
     }
 }
 

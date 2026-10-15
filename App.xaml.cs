@@ -9,7 +9,7 @@ namespace APCPA
             InitializeComponent();
 
             //generar un acceso para mainpage
-            MainPage = new NavigationPage(new Access());
+            MainPage = new NavigationPage(new Registro());
         }
 
         protected override Window CreateWindow(IActivationState? activationState)

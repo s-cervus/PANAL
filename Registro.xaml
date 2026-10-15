@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="APCPA.Access"
-             Title="Access">
+             x:Class="APCPA.Registro"
+             Title="Registro">
     <VerticalStackLayout>
         <Label
     Text="ACCESO"
@@ -24,8 +24,8 @@ Text="Inicia sesión"
     x:Name="EntPassword"
     Placeholder="Ingresa tu Contraseña"/>
         <Button 
-            x:Name="BtnCont_Clicked"            />
-
-
+            Clicked="BtnCont_Clicked"
+            Text="Continuar"
+            />
     </VerticalStackLayout>
 </ContentPage>

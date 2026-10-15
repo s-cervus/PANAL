@@ -11,6 +11,7 @@ namespace PA
 {
     internal class LibraryLoader
     {
+        /*
         // Forzamos a Windows a buscar DLLs nativas en nuestra carpeta temporal personalizada
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern bool SetDllDirectory(string lpPathName);
@@ -130,5 +131,6 @@ namespace PA
                 }
             }
         }
+        */
     }
 }

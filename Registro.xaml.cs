@@ -8,6 +8,8 @@ public partial class Registro : ContentPage
 	}
 	private async void BtnCont_Clicked (object sender, EventArgs e)
 	{
-
+		/* 
+		 interfas grafica
+		 */
 	}
 }

@@ -8,24 +8,9 @@
     Text="ACCESO"
     Style="{StaticResource Headline}"
     SemanticProperties.HeadingLevel="Level1" />
-        <Label
-Text="Inicia sesión"
-            FontSize="Subtitle"
-/>
-        <Label
-Text="Inicia sesión"
-            FontSize="15"
-/>
-
-        <Entry 
-            x:Name="EntUser"
-            Placeholder="Ingresa tu Usuario"/>
-        <Entry 
-    x:Name="EntPassword"
-    Placeholder="Ingresa tu Contraseña"/>
-        <Button 
-            Clicked="BtnCont_Clicked"
-            Text="Continuar"
-            />
+        <Grid
+            >
+            
+        </Grid>
     </VerticalStackLayout>
 </ContentPage>

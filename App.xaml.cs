@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace PANAL
+namespace APCPA
 {
     public partial class App : Application
     {

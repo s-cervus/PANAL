@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Runtime;
 
-namespace PANAL
+namespace APCPA
 {
     [Application]
     public class MainApplication : MauiApplication

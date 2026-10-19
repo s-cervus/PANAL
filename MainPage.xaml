@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="PANAL.MainPage"
+             x:Class="APCPA.MainPage"
              BackgroundImageSource="in4display1a.png"
              >
 
@@ -14,29 +14,23 @@
             
             <Label
                 Text="¡BIENVENIDOS!"
-                Style="{StaticResource Headline}"
                 SemanticProperties.HeadingLevel="Level1" />
 
             <Label
                 Text="Usuario:  "
                 SemanticProperties.HeadingLevel="Level5" />
 
-            <Entry
-                Text=" "
-                 />
+            <Entry/>
 
             <Label
                 Text="Contraseña:  "
                 SemanticProperties.HeadingLevel="Level5" />
 
-            <Entry
-                Text=" "
-                />
+            <Entry Text=" "/>
 
             <Button
                 x:Name="CounterBtn"
                 Text="Iniciar Sesión"
-                SemanticProperties.Hint="Counts the number of times you click"
                 Clicked="OnCounterClicked"
                 />
         </VerticalStackLayout>

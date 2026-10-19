@@ -1,4 +1,4 @@
-namespace PANAL;
+namespace APCPA;
 
 public partial class Registro : ContentPage
 {

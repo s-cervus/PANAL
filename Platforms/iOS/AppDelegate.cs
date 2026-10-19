@@ -1,6 +1,6 @@
 ﻿using Foundation;
 
-namespace PANAL
+namespace APCPA
 {
     [Register("AppDelegate")]
     public class AppDelegate : MauiUIApplicationDelegate

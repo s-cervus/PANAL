@@ -1,5 +1,5 @@
 <Solution>
-  <Project Path="APCPA.csproj">
+  <Project Path="PANAL.csproj">
     <Deploy Solution="Debug|*" />
   </Project>
 </Solution>

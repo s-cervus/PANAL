@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace APCPA
+namespace PANAL
 {
     public static class MauiProgram
     {

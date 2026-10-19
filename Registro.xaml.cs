@@ -6,10 +6,13 @@ public partial class Registro : ContentPage
 	{
 		InitializeComponent();
 	}
-	private async void BtnCont_Clicked (object sender, EventArgs e)
+	private async void OnBorrarClicked (object sender, EventArgs e)
 	{
-		/* 
-		 interfas grafica
-		 */
+
 	}
+
+    private void OnModificarClicked (object sender, EventArgs e)
+    {
+
+    }
 }

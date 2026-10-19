@@ -5,12 +5,48 @@
              Title="Registro">
     <VerticalStackLayout>
         <Label
-    Text="ACCESO"
+    Text="REGISTRO"
     Style="{StaticResource Headline}"
     SemanticProperties.HeadingLevel="Level1" />
-        <Grid
-            >
+        <Border
+                Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}"
+                StrokeShape="RoundRectangle 10"
+                StrokeThickness="1"
+                Padding="15">
+            <VerticalStackLayout Spacing="6">
+
+                <Grid ColumnDefinitions="*,*,*,*" >
+                    <Label
+                        Grid.Column="0"
+                        Text=""
+                        VerticalOptions="Start"
+                        x:Name="RegID"/>
+                    <Label
+                        Grid.Column="1"
+                        Text=""
+                        VerticalOptions="Start"
+                        x:Name="RegUser"/>
+                    <Label
+                        Grid.Column="2"
+                        Text=""
+                        VerticalOptions="Start"
+                        x:Name="RegRol"/>
+                    <Grid RowDefinitions="*,*">
+                        <Button
+                            Clicked="OnModificarClicked"
+                            Text="Modificar"
+                            Grid.Row="0"/>
+                        <Button
+                            Clicked="OnBorrarClicked"
+                            Text="Modificar"
+                            Grid.Row="1"/>
+                        <!--Texto-->
+                    </Grid>
+                </Grid>
+            </VerticalStackLayout>
             
-        </Grid>
+
+
+        </Border>
     </VerticalStackLayout>
 </ContentPage>

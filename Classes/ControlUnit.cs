@@ -17,15 +17,15 @@ namespace PA
 
         public static string Uniq_ID { get; private set; } = "";
         public static string CurrentRole { get; private set; } = "";
-        public static int IntentosFallidos { get; private set; } = 0;
+        public static int FailTries { get; private set; } = 0;
         public static string CurrentUser { get; private set; } = "";
 
         // Directorio exclusivo de tu sistema para evitar colisiones en la USB o disco
-        private const string DirectorioBunker = "data_PDC7";
+        private const string DATADIR = "data_PDC7";
         private const string LocalConnectionString = @"Data Source=data_PDC7\login.db;Version=3;Foreign Keys=True;";
-        private const string ServerConnectionString = @"Server=tu_servidor_vps;Database=EmpresaDB;Integrated Security=True;";
+        private const string ServerConnectionString = @"Server=server_SQLCON_isAvaliableIOUer;Database=PrincipalDB;Integrated Security=True;";
 
-        private const string PEPPER = "Equipo█5";
+        private const string SALT = "Equipo█5";
         private const int _GOLD_HEARTH = 65537; // Constante mutante para Key Stretching
         private const string LOCK_SIGNATURE = "system_final_door_lock"; // Identificador DOM
 
@@ -36,6 +36,8 @@ namespace PA
         /// <summary>
         /// Genera una sal (Caramel) de 16 bytes crudos usando entropía criptográfica por hardware.
         /// </summary>
+        /// 
+
         private static byte[] _get_caramel()
         {
             byte[] buffer = new byte[16];
@@ -50,13 +52,15 @@ namespace PA
         /// Procesa la contraseña de forma paramétrica uniendo bloques Unicode nativos.
         /// Ejecuta 65,537 iteraciones de SHA256 y retorna un BLOB puro de 32 bytes.
         /// </summary>
+        /// 
+
         private static byte[] _get_data(string usuario, string password, byte[] caramel)
         {
             using (SHA256 sha256 = SHA256.Create())
             {
                 byte[] userBytes = Encoding.Unicode.GetBytes(usuario);
                 byte[] passBytes = Encoding.Unicode.GetBytes(password);
-                byte[] pepperBytes = Encoding.Unicode.GetBytes(PEPPER);
+                byte[] pepperBytes = Encoding.Unicode.GetBytes(SALT);
                 byte[] blockBytes = Encoding.Unicode.GetBytes("███████");
 
                 int totalLength = blockBytes.Length * 2 + userBytes.Length + passBytes.Length + caramel.Length + pepperBytes.Length;
@@ -95,7 +99,7 @@ namespace PA
         {
             using (SHA256 sha256 = SHA256.Create())
             {
-                byte[] input = Encoding.Unicode.GetBytes(usuario.ToLower().Trim() + PEPPER);
+                byte[] input = Encoding.Unicode.GetBytes(usuario.ToLower().Trim() + SALT);
                 byte[] hash = sha256.ComputeHash(input);
                 return BitConverter.ToString(hash).Replace("-", "").Substring(0, 16).ToLower();
             }
@@ -105,11 +109,11 @@ namespace PA
         /// Capa de abstracción superior: Consulta dinámicamente la tabla cID 
         /// para resolver el rol en RAM sin usar condicionales rígidos.
         /// </summary>
-        private static void _establish_session(string usuario, int uid, SQLiteConnection conShared = null)
+        private static void _establish_session(string user, int uid, SQLiteConnection conShared = null)
         {
-            Uniq_ID = _generate_uniq_id(usuario);
+            Uniq_ID = _generate_uniq_id(user);
 
-            CurrentUser = usuario.Trim();
+            CurrentUser = user.Trim();
 
             int rolId = uid / 100000; // Extrae el prefijo del rol (Ej: 100045 -> 1)
 
@@ -183,16 +187,16 @@ namespace PA
                         object result = cmd.ExecuteScalar();
                         if (result != null && result != DBNull.Value)
                         {
-                            long unixTimestampBaneo = Convert.ToInt64(result);
-                            long unixTimeActual = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                            long unixTimestampBan = Convert.ToInt64(result);
+                            long unixTimeAct = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
-                            if (unixTimeActual < unixTimestampBaneo)
+                            if (unixTimeAct < unixTimestampBan)
                             {
                                 return true; // El escudo protector del DOM sigue activo
                             }
                             else
                             {
-                                _limpiar_lockdown(con); // El castigo expiró, restauramos.
+                                _pwoff_lockdown(con); // El castigo expiró, restauramos.
                             }
                         }
                     }
@@ -202,35 +206,35 @@ namespace PA
             return false;
         }
 
-        public static void IncrementarOActivarLockdown()
+        public static void IncreaseORStartLockdown()
         {
-            long unixTimeActual = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            long nuevoBloqueoUnix;
+            long unixTimeAct = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            long newLockUnix;
 
-            string queryBuscar = "SELECT Lockdown FROM Login WHERE Username = @lockSig";
+            string querySearch = "SELECT Lockdown FROM Login WHERE Username = @lockSig";
             using (SQLiteConnection con = new SQLiteConnection(LocalConnectionString))
             {
                 try
                 {
                     con.Open();
                     object actualLock = null;
-                    using (SQLiteCommand cmdBuscar = new SQLiteCommand(queryBuscar, con))
+                    using (SQLiteCommand cmdSearch = new SQLiteCommand(querySearch, con))
                     {
-                        cmdBuscar.Parameters.AddWithValue("@lockSig", LOCK_SIGNATURE);
-                        actualLock = cmdBuscar.ExecuteScalar();
+                        cmdSearch.Parameters.AddWithValue("@lockSig", LOCK_SIGNATURE);
+                        actualLock = cmdSearch.ExecuteScalar();
                     }
 
                     if (actualLock != null && actualLock != DBNull.Value)
                     {
                         // LÓGICA ACUMULATIVA: Si intentas golpear la puerta estando en DOM, sumamos 1 hora (3600s) extra en caliente
                         long timestampActualDb = Convert.ToInt64(actualLock);
-                        long baseCalculo = Math.Max(timestampActualDb, unixTimeActual);
-                        nuevoBloqueoUnix = baseCalculo + 3600;
+                        long baseCalculo = Math.Max(timestampActualDb, unixTimeAct);
+                        newLockUnix = baseCalculo + 3600;
                     }
                     else
                     {
                         // Primer baneo por fallar 3 veces consecutivas
-                        nuevoBloqueoUnix = unixTimeActual + 3600;
+                        newLockUnix = unixTimeAct + 3600;
                     }
 
                     string queryUpsert = @"
@@ -241,7 +245,7 @@ namespace PA
                     using (SQLiteCommand cmdUpsert = new SQLiteCommand(queryUpsert, con))
                     {
                         cmdUpsert.Parameters.AddWithValue("@sig", LOCK_SIGNATURE);
-                        cmdUpsert.Parameters.AddWithValue("@lockTime", nuevoBloqueoUnix);
+                        cmdUpsert.Parameters.AddWithValue("@lockTime", newLockUnix);
                         cmdUpsert.ExecuteNonQuery();
                     }
                 }
@@ -251,14 +255,14 @@ namespace PA
             // Degradación instantánea de credenciales en RAM
         }
 
-        private static void _limpiar_lockdown(SQLiteConnection con)
+        private static void _pwoff_lockdown(SQLiteConnection con)
         {
             string query = "DELETE FROM Login WHERE Username = @lockSig";
             using (SQLiteCommand cmd = new SQLiteCommand(query, con))
             {
                 cmd.Parameters.AddWithValue("@lockSig", LOCK_SIGNATURE);
                 cmd.ExecuteNonQuery();
-                IntentosFallidos = 0; // Reseteamos la telemetría local de errores
+                FailTries = 0; // Reseteamos la telemetría local de errores
             }
         }
 
@@ -266,7 +270,7 @@ namespace PA
         // SAFE REG BY ROLE (code: 1, 2, 3)
         // ========================================================
 
-        public static int RegistrarUsuario(string username, string password)
+        public static int RegUser(string username, string password)
         {
             int uid = 3;
             if (IsLockedDown()) return 3; // Operación denegada por infraestructura bajo fuego DOM
@@ -317,8 +321,8 @@ namespace PA
                         try
                         {
                             con.Open();
-                            int ejecutado = cmd.ExecuteNonQuery();
-                            return ejecutado > 0 ? 1 : 3;
+                            int executed = cmd.ExecuteNonQuery();
+                            return executed > 0 ? 1 : 3;
                         }
                         catch (SqlException ex)
                         {
@@ -363,20 +367,19 @@ namespace PA
         // AUTH Cryptan
         // ========================================================
 
-        public static bool CheckANDRotate(string usuario, string password)
+        public static bool CheckANDRotate(string user, string password)
         {
             if (IsLockedDown())
             {
                 // Lockdown in increase
-                IncrementarOActivarLockdown();
+                IncreaseORStartLockdown();
                 return false;
             }
 
-            string userClean = usuario.ToLower().Trim();
+            string userClean = user.ToLower().Trim();
 
             if (CurrentMode == DbMode.Local)
             {
-                // Traemos una única fila específica eliminando los escaneos lineales costosos
                 string query = "SELECT uID, Data, Caramel FROM Login WHERE Username = @user";
                 using (SQLiteConnection con = new SQLiteConnection(LocalConnectionString))
                 {
@@ -394,18 +397,18 @@ namespace PA
                                     byte[] dataDb = (byte[])lector["Data"];
                                     byte[] caramelDb = (byte[])lector["Caramel"];
 
-                                    byte[] hashIntento = _get_data(userClean, password, caramelDb);
+                                    byte[] hashTried = _get_data(userClean, password, caramelDb);
 
-                                    if (_compare_bytes(hashIntento, dataDb))
+                                    if (_compare_bytes(hashTried, dataDb))
                                     {
                                         lector.Close();
-                                        IntentosFallidos = 0; // Limpiamos el contador
+                                        FailTries = 0; // Limpiamos el contador
 
                                         // Resolvemos la sesión inyectando la conexión compartida para máxima velocidad
                                         _establish_session(userClean, uidDb, con);
 
                                         // Destruimos el Caramel previo forzando la mutación criptográfica instantánea
-                                        _mutar_caramel_local(con, userClean, password);
+                                        _rotate_caramel_local(con, userClean, password);
                                         return true;
                                     }
                                 }
@@ -427,20 +430,20 @@ namespace PA
                         try
                         {
                             con.Open();
-                            using (SqlDataReader lector = cmd.ExecuteReader())
+                            using (SqlDataReader reader = cmd.ExecuteReader())
                             {
-                                if (lector.Read())
+                                if (reader.Read())
                                 {
-                                    int uidDb = Convert.ToInt32(lector["uID"]);
-                                    byte[] dataDb = (byte[])lector["Data"];
-                                    byte[] caramelDb = (byte[])lector["Caramel"];
+                                    int uidDb = Convert.ToInt32(reader["uID"]);
+                                    byte[] dataDb = (byte[])reader["Data"];
+                                    byte[] caramelDb = (byte[])reader["Caramel"];
 
-                                    byte[] hashIntento = _get_data(userClean, password, caramelDb);
+                                    byte[] hashTried = _get_data(userClean, password, caramelDb);
 
-                                    if (_compare_bytes(hashIntento, dataDb))
+                                    if (_compare_bytes(hashTried, dataDb))
                                     {
-                                        lector.Close();
-                                        IntentosFallidos = 0;
+                                        reader.Close();
+                                        FailTries = 0;
                                         _establish_session(userClean, uidDb, null);
                                         _mutar_caramel_server(con, userClean, password);
                                         return true;
@@ -454,24 +457,24 @@ namespace PA
             }
 
             // Si la ejecución llega a este punto, las credenciales fallaron
-            IntentosFallidos++;
-            if (IntentosFallidos >= 3)
+            FailTries++;
+            if (FailTries >= 3)
             {
-                IncrementarOActivarLockdown(); // Detonación automática del DOM
+                IncreaseORStartLockdown(); // Detonación automática del DOM
             }
             return false;
         }
 
-        private static void _mutar_caramel_local(SQLiteConnection con, string user, string pass)
+        private static void _rotate_caramel_local(SQLiteConnection con, string user, string pass)
         {
-            byte[] nuevoCaramel = _get_caramel();
-            byte[] nuevoData = _get_data(user, pass, nuevoCaramel);
+            byte[] newCaramel = _get_caramel();
+            byte[] newData = _get_data(user, pass, newCaramel);
 
             string query = "UPDATE Login SET Data = @nd, Caramel = @nc WHERE Username = @user";
             using (SQLiteCommand cmd = new SQLiteCommand(query, con))
             {
-                cmd.Parameters.Add("@nd", DbType.Binary).Value = nuevoData;
-                cmd.Parameters.Add("@nc", DbType.Binary).Value = nuevoCaramel;
+                cmd.Parameters.Add("@nd", DbType.Binary).Value = newData;
+                cmd.Parameters.Add("@nc", DbType.Binary).Value = newCaramel;
                 cmd.Parameters.AddWithValue("@user", user);
                 cmd.ExecuteNonQuery();
             }
@@ -479,14 +482,14 @@ namespace PA
 
         private static void _mutar_caramel_server(SqlConnection con, string user, string pass)
         {
-            byte[] nuevoCaramel = _get_caramel();
-            byte[] nuevoData = _get_data(user, pass, nuevoCaramel);
+            byte[] newCaramel = _get_caramel();
+            byte[] newData = _get_data(user, pass, newCaramel);
 
             string query = "UPDATE Login SET Data = @nd, Caramel = @nc WHERE Username = @user";
             using (SqlCommand cmd = new SqlCommand(query, con))
             {
-                cmd.Parameters.Add("@nd", SqlDbType.VarBinary).Value = nuevoData;
-                cmd.Parameters.Add("@nc", SqlDbType.VarBinary).Value = nuevoCaramel;
+                cmd.Parameters.Add("@nd", SqlDbType.VarBinary).Value = newData;
+                cmd.Parameters.Add("@nc", SqlDbType.VarBinary).Value = newCaramel;
                 cmd.Parameters.AddWithValue("@user", user);
                 cmd.ExecuteNonQuery();
             }
@@ -496,22 +499,22 @@ namespace PA
         // SECCIÓN DE INICIALIZACIÓN
         // ========================================================
 
-        public static void InicializarEntornoLocal()
+        public static void InitializeLocalEnviroment()
         {
             // Forzar la creación de la carpeta de datos PDC7
-            if (!Directory.Exists(DirectorioBunker))
+            if (!Directory.Exists(DATADIR))
             {
-                Directory.CreateDirectory(DirectorioBunker);
+                Directory.CreateDirectory(DATADIR);
             }
 
-            string rutaArchivo = Path.Combine(DirectorioBunker, "login.db");
-            bool recienCreado = !File.Exists(rutaArchivo);
+            string ruteFile = Path.Combine(DATADIR, "login.db");
+            bool newFileCreated = !File.Exists(ruteFile);
 
             using (SQLiteConnection connection = new SQLiteConnection(LocalConnectionString))
             {
                 connection.Open();
 
-                if (recienCreado)
+                if (newFileCreated)
                 {
                     // Tabla Login adaptada al estándar STRICT binario puro
                     string tableLogin = @"
@@ -536,24 +539,24 @@ namespace PA
                     using (SQLiteCommand cmd = new SQLiteCommand(tableCID, connection)) cmd.ExecuteNonQuery();
 
                     // Alimentamos la abstracción de roles
-                    string insertarCat = @"
+                    string insertCatAccounts = @"
                         INSERT INTO cID (ID, element) VALUES 
-                        (0, 'DOM'),
-                        (1, 'super'),
-                        (2, 'admin'),
-                        (3, 'empleado'),
-                        (4, 'auditor'),
-                        (5, 'ajustes'),
+                        (000, 'DOM'),
+                        (001, 'super'),
+                        (002, 'admin'),
+                        (003, 'empleado'),
+                        (004, 'auditor'),
+                        (005, 'ajustes'),
                         (999, 'test');";
 
-                    using (SQLiteCommand cmdCat = new SQLiteCommand(insertarCat, connection)) cmdCat.ExecuteNonQuery();
+                    using (SQLiteCommand cmdCat = new SQLiteCommand(insertCatAccounts, connection)) cmdCat.ExecuteNonQuery();
 
                     // Cuentas de desarrollo iniciales empaquetadas (Formato uID: [Rango][Secuencia])
-                    _registrar_init_local(connection, "super", "super7", 100001);
-                    _registrar_init_local(connection, "admin_sec", "admin123", 200001);
-                    _registrar_init_local(connection, "empleado", "push99", 300001);
-                    _registrar_init_local(connection, "auditor", "readonly", 400001);
-                    _registrar_init_local(connection, "test", "test", 99900001);
+                    _registrar_local_init(connection, "super", "admin#1000", 00100001);
+                    // _registrar_local_init(connection, "admin_sec", "admin123", 0000001);
+                    // _registrar_local_init(connection, "empleado", "push99", 00300001);
+                    // _registrar_local_init(connection, "auditor", "readonly", 00400001);
+                    // _registrar_local_init(connection, "test", "test", 99900001);
                 }
             }
 
@@ -571,7 +574,7 @@ namespace PA
             */
         }
 
-        private static void _registrar_init_local(SQLiteConnection con, string user, string pass, int uid)
+        private static void _registrar_local_init(SQLiteConnection con, string user, string pass, int uid)
         {
             byte[] caramel = _get_caramel();
             byte[] data = _get_data(user, pass, caramel);

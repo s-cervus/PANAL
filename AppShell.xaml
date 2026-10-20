@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:APCPA"
     Title="APCPA">
 
+    
     <ShellContent
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />

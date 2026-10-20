@@ -3,16 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APCPA.Registro"
              Title="Registro">
-    <VerticalStackLayout>
+    <VerticalStackLayout
+        Padding="10">
         <Label
-    Text="REGISTRO"
-    Style="{StaticResource Headline}"
-    SemanticProperties.HeadingLevel="Level1" />
+            Text="REGISTRO"
+            Style="{StaticResource Headline}"
+            SemanticProperties.HeadingLevel="Level1" />
         <Border
                 Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}"
                 StrokeShape="RoundRectangle 10"
                 StrokeThickness="1"
-                Padding="15">
+                Padding="30">
             <VerticalStackLayout Spacing="6">
 
                 <Grid ColumnDefinitions="*,*,*,*" >
@@ -44,9 +45,6 @@
                     </Grid>
                 </Grid>
             </VerticalStackLayout>
-            
-
-
         </Border>
     </VerticalStackLayout>
 </ContentPage>

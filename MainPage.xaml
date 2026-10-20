@@ -29,10 +29,9 @@
             <Entry Text=" "/>
 
             <Button
-                x:Name="CounterBtn"
+                x:Name="Count"
                 Text="Iniciar Sesión"
-                Clicked="OnCounterClicked"
-                />
+                Clicked="RegisterBTN"/>
         </VerticalStackLayout>
     </ScrollView>
 

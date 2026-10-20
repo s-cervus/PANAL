@@ -7,11 +7,12 @@
         public MainPage()
         {
             InitializeComponent();
+            // Routing.RegisterRoute(nameof(Registro), typeof(Registro));
         }
 
-        private void OnCounterClicked(object? sender, EventArgs e)
+        private async void RegisterBTN(object? sender, EventArgs e)
         {
-            
+            await Navigation.PushAsync(new Registro());
         }
     }
 }

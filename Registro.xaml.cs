@@ -6,7 +6,7 @@ public partial class Registro : ContentPage
 	{
 		InitializeComponent();
 	}
-	private async void OnBorrarClicked (object sender, EventArgs e)
+	private async void OnDeleteClicked (object sender, EventArgs e)
 	{
 
 	}
@@ -14,5 +14,11 @@ public partial class Registro : ContentPage
     private void OnModificarClicked (object sender, EventArgs e)
     {
 
+    }
+
+
+	private async void Return(object? sender, EventArgs e)
+	{
+		await Navigation.PushAsync(new MainPage());
     }
 }

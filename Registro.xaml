@@ -38,8 +38,8 @@
                             Text="Modificar"
                             Grid.Row="0"/>
                         <Button
-                            Clicked="OnBorrarClicked"
-                            Text="Modificar"
+                            Clicked="Return"
+                            Text="Return"
                             Grid.Row="1"/>
                         <!--Texto-->
                     </Grid>

@@ -1,6 +1,3 @@
-# Reparar
-
-Los namespaces de las clases nuevas
 
 # Importante
 Integrar botones de regreso

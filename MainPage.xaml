@@ -14,13 +14,21 @@
             
             <Label
                 Text="¡BIENVENIDOS!"
-                SemanticProperties.HeadingLevel="Level1" />
+                FontSize="30"
+                HorizontalOptions="Center" />
+                
 
             <Label
+                Grid.Column="0"
                 Text="Usuario:  "
-                SemanticProperties.HeadingLevel="Level5" />
+                FontSize="16"
+                />
 
-            <Entry/>
+            <Entry
+                Grid.Column="1"
+                Placeholder="Escribe tu usuario"
+                HorizontalOptions="Center"/>
+            
 
             <Label
                 Text="Contraseña:  "
